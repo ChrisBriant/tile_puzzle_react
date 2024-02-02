@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import {getNextInSequence, getSurroundingIndices} from '../helpers/helpers';
+import { createRenderer } from 'react-dom/test-utils';
 
 const GridCanvas = (props) => {
   const canvasRef = useRef(null);
@@ -8,6 +9,7 @@ const GridCanvas = (props) => {
   const gridSquareSize = 30;
   const gridOffset = 50;
   const grid = [];
+  const goalGrid = [];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -24,17 +26,40 @@ const GridCanvas = (props) => {
     //console.log('Here is the grid', grid);
     context.fillRect(0, 0, 600, 600); // Adjust the coordinates and dimensions as needed
     drawGrid(gridOffset,grid,gridSize,gridSquareSize,context);
+    createGoalGrid(startColor,context);
   }, []);
+
+  const createGoalGrid = (startColor,context) => {
+    for(let i=0;i < gridSize*gridSize; i++) {
+      goalGrid[i] = startColor;
+    }
+    //Get random tile and change the color sequence
+    // Get a random index
+    const randomIndex = Math.floor(Math.random() * goalGrid.length);
+    // Get the random item
+    const nextColor = getNextColor(goalGrid[randomIndex]);
+    //console.log('NEXT COLOR', nextColor);
+    //Set the grid
+    goalGrid[randomIndex] = nextColor;
+    const surroundingIndicies = getSurroundingIndices(gridSize,randomIndex);
+    console.log('Surrounding', surroundingIndicies);
+    surroundingIndicies.forEach(idx => {
+      const nextColor = getNextColor(goalGrid[randomIndex],2);
+      goalGrid[idx] = nextColor;
+    });
+    drawGrid(gridOffset + 200,goalGrid,gridSize,gridSquareSize,context);
+  }
 
   const getGridItem = (x,y, width,grid) => {
     const idx = y * width + x;
     return grid[idx];
   }
   
-  const getNextColor = (clickedColor) => {
+  //jumpValue is the number of steps to jump in the cycle
+  const getNextColor = (clickedColor,jumpValue=1) => {
     const currentColorIndex = props.colorSequence.indexOf(clickedColor);
     //console.log('Current Color', currentColorIndex, props.colorSequence, clickedColor, grid);
-    const nextColorIndex = getNextInSequence(props.colorSequence, currentColorIndex, 2);
+    const nextColorIndex = getNextInSequence(props.colorSequence, currentColorIndex, jumpValue);
     return props.colorSequence[nextColorIndex];
   }
 
@@ -82,6 +107,10 @@ const GridCanvas = (props) => {
     grid[gridIdx] = nextColor;
     const surroundingIndicies = getSurroundingIndices(gridSize,gridIdx);
     console.log('Surrounding', surroundingIndicies);
+    surroundingIndicies.forEach(idx => {
+      const nextColor = getNextColor(grid[idx],2);
+      grid[idx] = nextColor;
+    });
     drawGrid(gridOffset,grid,gridSize,gridSquareSize,context);
     
     // const gridSize = 4; // Adjust this based on your gridSize
