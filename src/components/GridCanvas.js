@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {getNextInSequence, getSurroundingIndices} from '../helpers/helpers';
+import {arraysEqual, getNextInSequence, getSurroundingIndices} from '../helpers/helpers';
 
 
 const GridCanvas = (props) => {
@@ -21,7 +21,7 @@ const GridCanvas = (props) => {
     const context = canvas.getContext('2d');
 
     // Set the fill color and draw a solid block
-    context.fillStyle = props.colorSequence[Math.floor(Math.random() * props.colorSequence.length)];
+    context.fillStyle = '#000000'; //props.colorSequence[Math.floor(Math.random() * props.colorSequence.length)];
     const startColor = props.colorSequence[Math.floor(Math.random() * props.colorSequence.length)];
     //let grid = [];
     for(let i=0;i < gridSize*gridSize; i++) {
@@ -111,6 +111,7 @@ const GridCanvas = (props) => {
     drawGrid(gridOffsetX,gridOffsetY,grid,gridSize,gridSquareSize,context);
     //Update the move count
     props.updateGame(grid);
+    console.log('Goal met', arraysEqual(grid,goalGrid));
   }
 
   return <canvas ref={canvasRef} onMouseDown={handleMouseDown} width={600} height={600} />;

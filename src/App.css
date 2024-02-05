@@ -1,3 +1,8 @@
+:root {
+  --move-counter-background : #00000080;
+  --move-counter-text-color : #fff;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,4 +17,58 @@
 canvas {
   display: block;
   margin: auto;
+}
+
+/* MOVE COUNTER  */
+
+.move-counter {
+  position: absolute;
+  color : var(--move-counter-text-color);
+  left: 40%;
+  top: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  border: 1px solid #fff;
+  width: 20%;
+  padding: 2px;
+  background-color: var(--move-counter-background);
+}
+
+.move-counter:first-child {
+  font-weight: bold;
+}
+
+/* DIALOG  */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha (last value) for transparency */
+  z-index: 100; /* Ensure the overlay appears on top of other elements */
+}
+
+
+.message-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  top: 100px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+  z-index: 200;
+  width: 50%;
+  background: #fff;
+}
+
+.message-box * {
+  margin: 10px;
+}
+
+.message-box .btn {
+  width: 50%;
 }

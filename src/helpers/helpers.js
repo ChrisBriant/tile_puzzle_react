@@ -16,6 +16,10 @@ function getNextInSequence(array, idx, offset=1) {
   return idx + offset;
 }
 
+function arraysEqual(array1, array2) {
+  return array1.toString() === array2.toString();
+}
+
 
 // function getSurroundingIndices(gridSize, currentIndex) {
 //   const row = Math.floor(currentIndex / gridSize);
@@ -92,4 +96,4 @@ function getSurroundingIndices(gridSize, currentIndex) {
   return surroundingIndices;
 }
 
-export {shuffleArray, getNextInSequence, getSurroundingIndices};
+export {shuffleArray, getNextInSequence, getSurroundingIndices, arraysEqual};
