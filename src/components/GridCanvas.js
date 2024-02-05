@@ -7,7 +7,8 @@ const GridCanvas = (props) => {
   //const availableColors = ["#20c91a","#c9c91a","#c9831a","#c9371a","#1a5dc9","#831ac9","#c91a9a"];
   const gridSize = 6;
   const gridSquareSize = 30;
-  const gridOffset = 50;
+  const gridOffsetX = 50;
+  const gridOffsetY = 50;
   const grid = [];
   const goalGrid = [];
 
@@ -25,7 +26,7 @@ const GridCanvas = (props) => {
     }
     //console.log('Here is the grid', grid);
     context.fillRect(0, 0, 600, 600); // Adjust the coordinates and dimensions as needed
-    drawGrid(gridOffset,grid,gridSize,gridSquareSize,context);
+    drawGrid(gridOffsetX,gridOffsetY,grid,gridSize,gridSquareSize,context);
     createGoalGrid(startColor,context);
   }, []);
 
@@ -38,16 +39,16 @@ const GridCanvas = (props) => {
     const randomIndex = Math.floor(Math.random() * goalGrid.length);
     // Get the random item
     const nextColor = getNextColor(goalGrid[randomIndex]);
-    //console.log('NEXT COLOR', nextColor);
+    console.log('NEXT COLOR', nextColor);
     //Set the grid
     goalGrid[randomIndex] = nextColor;
     const surroundingIndicies = getSurroundingIndices(gridSize,randomIndex);
-    console.log('Surrounding', surroundingIndicies);
+    console.log('Surrounding', surroundingIndicies, goalGrid);
     surroundingIndicies.forEach(idx => {
-      const nextColor = getNextColor(goalGrid[randomIndex],2);
+      const nextColor = getNextColor(goalGrid[idx],2);
       goalGrid[idx] = nextColor;
     });
-    drawGrid(gridOffset + 200,goalGrid,gridSize,gridSquareSize,context);
+    drawGrid(gridOffsetX + 200, gridOffsetY,goalGrid,gridSize,gridSquareSize,context);
   }
 
   const getGridItem = (x,y, width,grid) => {
@@ -65,8 +66,8 @@ const GridCanvas = (props) => {
 
   const getClickedGridIndex = (clickX,clickY,gridSize,offset,squareSize) => {
     // Detect if out of bounds of the grid
-    const maxXY = (offset + gridSize * squareSize);
-    if((clickX < offset || clickX > maxXY) || (clickY < offset || clickY > maxXY)) {
+    const maxXY = (gridOffsetX + gridSize * squareSize);
+    if((clickX < gridOffsetX || clickX > maxXY) || (clickY < gridOffsetY || clickY > maxXY)) {
       return -1;
     }
     // Calculate the grid cell coordinates
@@ -81,12 +82,12 @@ const GridCanvas = (props) => {
     return clickedIdx;
   }
 
-  const drawGrid = (offest,grid,gridSize,squareSize,context) => {
+  const drawGrid = (offsetX,offsetY,grid,gridSize,squareSize,context) => {
     for(let x=0;x<gridSize;x++) {
       for(let y=0;y<gridSize; y++) {
         context.fillStyle = getGridItem(x,y,gridSize,grid);
         //console.log('Grid item', getGridItem(x,y,gridSize,grid));
-        context.fillRect((x*squareSize) + 1 + offest,(y*squareSize) + 1 + offest, squareSize -1,squareSize-1);
+        context.fillRect((x*squareSize) + 1 + offsetX,(y*squareSize) + 1 + offsetY, squareSize -1,squareSize-1);
       }
     }
   }
@@ -99,8 +100,11 @@ const GridCanvas = (props) => {
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     //console.log('clicked', mouseX,mouseY);
-    const gridIdx = getClickedGridIndex(mouseX,mouseY,gridSize,gridOffset,gridSquareSize);
+    const gridIdx = getClickedGridIndex(mouseX,mouseY,gridSize,gridOffsetX,gridSquareSize);
     console.log('Clicked index', gridIdx);
+    if(gridIdx === -1) {
+      return;
+    }
     const nextColor = getNextColor(grid[gridIdx]);
     //console.log('NEXT COLOR', nextColor);
     //Set the grid
@@ -111,7 +115,7 @@ const GridCanvas = (props) => {
       const nextColor = getNextColor(grid[idx],2);
       grid[idx] = nextColor;
     });
-    drawGrid(gridOffset,grid,gridSize,gridSquareSize,context);
+    drawGrid(gridOffsetX,gridOffsetY,grid,gridSize,gridSquareSize,context);
     
     // const gridSize = 4; // Adjust this based on your gridSize
     // const squareSize = 20; // Adjust this based on your squareSize
