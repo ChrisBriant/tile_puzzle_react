@@ -58,7 +58,7 @@ function App() {
         ? <>
           <ColorSequence colors={randomisedColors} />
           <MoveCounter moves={moveCount} />
-          <GridCanvas colorSequence={randomisedColors} updateGame={updateGame} grid={grid}/>
+          <GridCanvas colorSequence={randomisedColors} updateGame={updateGame} grid={grid} setGameOver={setGameOver}/>
         </>
         : <p>Loading...</p>
       }

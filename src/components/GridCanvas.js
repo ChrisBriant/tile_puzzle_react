@@ -30,7 +30,7 @@ const GridCanvas = (props) => {
     context.fillRect(0, 0, 600, 600); // Adjust the coordinates and dimensions as needed
     drawGrid(gridOffsetX,gridOffsetY,grid,gridSize,gridSquareSize,context);
     createGoalGrid(startColor,context);
-  }, []);
+  }, [props.colorSequence]);
 
   const createGoalGrid = (startColor,context) => {
     for(let i=0;i < gridSize*gridSize; i++) {
@@ -112,6 +112,9 @@ const GridCanvas = (props) => {
     //Update the move count
     props.updateGame(grid);
     console.log('Goal met', arraysEqual(grid,goalGrid));
+    if(arraysEqual(grid,goalGrid)) {
+      props.setGameOver(true);
+    }
   }
 
   return <canvas ref={canvasRef} onMouseDown={handleMouseDown} width={600} height={600} />;
